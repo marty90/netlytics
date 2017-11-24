@@ -34,7 +34,7 @@ Done with https://github.com/ekalinin/github-markdown-toc )
 
 
 # 1. Prerequisites
-Netlytics is designed to work in the Hadoop ecosystem. As such, it needs HDFS and Apache Spark to respectively store and process log files. It uses python 2.7 and few python packages: you can install them with pip
+Netlytics is designed to work in the Hadoop ecosystem. As such, it needs HDFS and Apache Spark (>= 2.0.0) to respectively store and process log files. It uses python 2.7 and few python packages: you can install them with pip
 ```
 sudo pip install zipfile scapy numpy pandas pyasn
 ```
@@ -222,7 +222,78 @@ Available algorithms are:
 NetLyitics allows to run SQL queries on Data Tables to perform simple analytics. Instruction to this are reported later.
 
 
+# 3. Running jobs:
+To run a NetLytics job, you shoud use the `run_job.py` script, which has the following syntax:
+```
+spark2-submit run_job.py [-h] [--input_path input_path] [--output_path output_path]
+                  [--connector connector] [--algo algo] [--params params]
+                  [--start_day start_day] [--end_day end_day]
+                  [--temp_dir_local temp_dir_local]
+                  [--temp_dir_HDFS temp_dir_HDFS]
+                  [--persistent_dir_local persistent_dir_local]
+                  [--persistent_dir_HDFS persistent_dir_HDFS]
 
+optional arguments:
+  -h, --help            show this help message and exit
+  --input_path input_path
+                        Base Log Files Input Path
+  --output_path output_path
+                        Directory where the output of the algo is stored
+  --connector connector
+                        Connector class name
+  --algo algo           Algorithm to run
+  --params params       Parameters to be given to the Algo, in Json
+  --start_day start_day
+                        Start day for analysis, format YYYY_MM_DD
+  --end_day end_day     End day for analysis, format YYYY_MM_DD
+  --temp_dir_local temp_dir_local
+                        Directory where to store intermediate files
+  --temp_dir_HDFS temp_dir_HDFS
+                        Directory on HDFS where to store intermediate files
+  --persistent_dir_local persistent_dir_local
+                        Directory where to store persistent algorithm data
+                        (local)
+  --persistent_dir_HDFS persistent_dir_HDFS
+                        Directory where to store persistent algorithm data
+                        (HDFS)
+```
+Recall that the script must be submitted to spark, and, thus, executed with the `spark-submit` utility.
+
+
+# 4. Running SQL queries:
+NetLytics can run SQL queries on Data Table, using the `run_query.py` script, which has the following syntax:  
+```
+spark2-submit run_query.py [-h] [--input_path input_path]
+                    [--output_file_local output_file_local]
+                    [--output_file_HDFS output_file_HDFS] [--query query]
+                    [--connector connector] [--start_day start_day]
+                    [--end_day end_day]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --input_path input_path
+                        Base Log Files Input Path
+  --output_file_local output_file_local
+                        File where the resulting table is saved (locally).
+                        Cannot be specified together with output_file_HDFS
+  --output_file_HDFS output_file_HDFS
+                        File where the resulting table is saved (HDFS). Cannot
+                        be specified together with output_file_local
+  --query query         SQL Query to exectute. Use "netlytics" as SQL table
+                        name
+  --connector connector
+                        Connector class name
+  --start_day start_day
+                        Start day for analysis, format YYYY_MM_DD
+  --end_day end_day     End day for analysis, format YYYY_MM_DD
+
+```
+
+To get the list of the available columns, see the `json` schemas in the `schema` directories.
+
+# 5. Examples
+## 5.1 Running an algorithm
+## 5.2 Running a SQL query
 
 
 
