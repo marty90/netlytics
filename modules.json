@@ -1,0 +1,136 @@
+{
+    "connectors":
+    {
+        "Tstat":
+        {
+            "DNS":
+            {
+                "class": "connectors.tstat_to_DNS.Tstat_To_DNS"
+            },
+            "NamedFlows":
+            {
+                "class": "connectors.tstat_to_named_flows.Tstat_To_Named_Flows"
+            },
+            "HTTP":
+            {
+                "class": "connectors.tstat_to_HTTP.Tstat_To_HTTP"
+            }
+        },
+        "Bro":
+        {
+            "DNS":
+            {
+                "class": "connectors.bro_to_DNS.Bro_To_DNS"
+            },
+            "HTTP":
+            {
+                "class": "connectors.bro_to_HTTP.Bro_To_HTTP"
+            },
+            "NamedFlows":
+            {
+                "class": "connectors.bro_to_named_flows.Bro_To_Named_Flows"
+            }
+        },
+        "Squid":
+        {
+            "HTTP":
+            {
+                "class": "connectors.squid_to_HTTP.Squid_To_HTTP"
+            },
+            "NamedFlows":
+            {
+                "class": "connectors.squid_to_named_flows.Squid_To_Named_Flows"
+            }
+        },
+        "Bind":
+        {
+            "DNS":
+            {
+                "class": "connectors.bind_to_DNS.Bind_To_DNS"
+            }
+        },
+        "PCAP":
+        {
+            "DNS":
+            {
+                "class": "connectors.PCAP_to_DNS.PCAP_To_DNS"
+            }
+        },
+        "TSTAT_PCAP":
+        {
+            "DNS":
+            {
+                "class": "connectors.PCAP_to_DNS.TSTAT_PCAP_To_DNS"
+            }
+        }
+    },
+    "algos":
+    {
+        "Remedy":
+        {
+            "class": "algos.remedy.Remedy_DNS_manipulations.RemedyDNSManipulations",
+            "input_type": "DNS",
+            "preferred_batch": "5d",
+            "parameters":
+            {
+                "min_resolutions":"Minimum number of observation to consider a domain. Default 50.",
+                "ASN_VIEW": "Path to an updated ASN view compatible with 'pyasn' python module."
+            },
+            "output_format":"A single CSV file reporting general per-resolver statistics, along with discovered manipulations",
+            "description": "REMeDy is a system that assists operators to identify the use of rogue DNS resolvers in their networks. REMeDy is a completely automatic and parameter-free system that evaluates the consistency of responses across the resolvers active in the network."    
+        },
+        "WHAT":
+        {
+            "class": "algos.WHAT.WHAT",
+            "input_type": "NamedFlows",
+            "preferred_batch": "1d",
+            "parameters":
+            {
+                "CORES":"Core Domains to measure.",
+                "OW":"Observation Windows for training, in milliseconds. Default 10000.",
+                "GAP":"Silent time for considering OW, in milliseconds. Default 10000.",
+                "EW":"Evaluation Window for classification, in milliseconds. Default 5000.",
+                "N_TOP":"Truncate output list after N_TOP entries. Default 50."
+            },
+            "output_format":"A single CSV file reporting the amount of traffic due to each core domain.",
+            "description": "WHAT is a system to uncover the overall traffic produced by specific web services. WHAT combines big data and machine learning approaches to process large volumes of network flow measurements and learn how to group traffic due to pre-defined services of interest."
+        },
+        "TrafficPerDomain":
+        {
+            "class": "algos.domain_traffic.DomainTraffic",
+            "input_type": "NamedFlows",
+            "preferred_batch": "1d",
+            "parameters":
+            {
+                "N_TOP":"Truncate output list after N_TOP entries. Default 50."
+            },
+            "output_format":"A single CSV file reporting the amount of traffic due to each domain.",
+            "description": "Account traffic per-destination hostname."
+        },
+        "ContactedResolvers":
+        {
+            "class": "algos.top_DNS_servers.TopDNSServers",
+            "input_type": "DNS",
+            "preferred_batch": "1d",
+            "parameters":
+            {
+                "N_TOP":"Truncate output list after N_TOP entries. Default 50."
+            },
+            "output_format":"A single CSV file reporting the amount of queries directed to each resolver.",
+            "description": "Study the traffic to DNS resolvers in the network."
+        },
+        "Print Dataset":
+        {
+            "class": "algos.save_Dataframe.SaveDataFrame",
+            "input_type": "*",
+            "preferred_batch": "*",
+            "output_format":"The dataframe in CSV format.",
+            "description": "Simply save the dataframe in local.",
+            "parameters":
+            {
+                "N":"Truncate output after N entries. Default: No limit."
+            }
+        }
+    }
+
+}

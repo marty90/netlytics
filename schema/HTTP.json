@@ -1,0 +1,119 @@
+{                                                                               
+  "fields": [
+    {
+      "metadata": {}, 
+      "type": "string", 
+      "name": "c_ip", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "long", 
+      "name": "c_port", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "string", 
+      "name": "content_range", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "string", 
+      "name": "content_type", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "string", 
+      "name": "host", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "string", 
+      "name": "method", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "string", 
+      "name": "path", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "string", 
+      "name": "referrer", 
+      "nullable": true
+    },
+    {
+      "metadata": {}, 
+      "type": "string", 
+      "name": "req_cookie", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "double", 
+      "name": "req_time", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "long", 
+      "name": "request_body_len", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "double", 
+      "name": "resp_time", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "long", 
+      "name": "response_body_len", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "string", 
+      "name": "s_ip", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "long", 
+      "name": "s_port", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "string", 
+      "name": "server", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "string", 
+      "name": "set_cookie", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "long", 
+      "name": "status_code", 
+      "nullable": true
+    }, 
+    {
+      "metadata": {}, 
+      "type": "string", 
+      "name": "user_agent", 
+      "nullable": true
+    }
+  ], 
+  "type": "struct"
+}
