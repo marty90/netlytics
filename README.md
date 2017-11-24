@@ -17,6 +17,8 @@ For information about this Readme file and this tool please write to
 Done with https://github.com/ekalinin/github-markdown-toc )
 -->
 
+   * [NetLytics](#netlytics)
+   * [Table of Content](#table-of-content)
    * [1. Prerequisites](#1-prerequisites)
    * [2. Architecture](#2-architecture)
       * [2.1 Tools generating Network Logs](#21-tools-generating-network-logs)
@@ -30,7 +32,10 @@ Done with https://github.com/ekalinin/github-markdown-toc )
       * [2.4 Data Tables](#24-data-tables)
       * [2.5 Algorithms](#25-algorithms)
       * [2.6 Running SQL queries](#26-running-sql-queries)
-
+   * [3. Running jobs:](#3-running-jobs)
+   * [4. Running SQL queries:](#4-running-sql-queries)
+   * [5. Examples](#5-examples)
+      * [5.1 Running an algorithm](#51-running-an-algorithm)
 
 
 # 1. Prerequisites
@@ -290,11 +295,38 @@ optional arguments:
 ```
 
 To get the list of the available columns, see the `json` schemas in the `schema` directories.
+The name of the table to be used in the query is `netlytics`.
 
 # 5. Examples
 ## 5.1 Running an algorithm
+In this example we suppose to have SQUID log files in `logs/squid` for the whole month of March 2017.
+Now we run the command to account the account the traffic to the corresponding domain for the whole month.
+
+```
+spark-submit run_job.py \
+      \
+      --connector "connectors.squid_to_named_flows.Squid_To_Named_Flows" \
+      --input_path "logs/squid" \
+      --start_day "2017_03_01" \
+      --end_day "2017_03_31" \
+      \
+      --algo "algos.domain_traffic.DomainTraffic" \
+      --params '{"N":40}' \
+      --output_path "results_DOMAIN_TRAFFIC" \
+```
 ## 5.2 Running a SQL query
+Now, we perform the same job of above using a SQL query, and the `run_query.py` script.
+```
+spark-submit run_query.py \
+      \
+      --connector "connectors.squid_to_named_flows.Squid_To_Named_Flows" \
+      --input_path "logs/squid" \
+      --start_day "2017_03_01" \
+      --end_day "2017_03_31" \
+      \
+      --query "SELECT name, SUM(s_bytes) AS traffic FROM netlytics GROUP BY name ORDER BY SUM(s_bytes)" \
+      --output_file_local "traffic_name.csv"
 
-
+```
 
 
