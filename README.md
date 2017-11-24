@@ -36,6 +36,7 @@ Done with https://github.com/ekalinin/github-markdown-toc )
    * [4. Running SQL queries:](#4-running-sql-queries)
    * [5. Examples](#5-examples)
       * [5.1 Running an algorithm](#51-running-an-algorithm)
+      * [5.2 SQL Query](#52-sql-query)
 
 
 # 1. Prerequisites
@@ -314,7 +315,7 @@ spark-submit run_job.py \
       --params '{"N":40}' \
       --output_path "results_DOMAIN_TRAFFIC" \
 ```
-## 5.2 Running a SQL query
+## 5.2 SQL query
 Now, we perform the same job of above using a SQL query, and the `run_query.py` script.
 ```
 spark-submit run_query.py \
