@@ -43,8 +43,16 @@ Bro typically rotate log files every hour, and puts all log files generated in o
 \------------ http.13.00.00-14.00.00.log.gz
 \------------ http.14.00.00-15.00.00.log.gz
 \------------ ...
+2017-11-21/
+\------------ ...
 ```
 NetLyitics assumes that this directory structure is replicated in HDFS.
+### Squid
+[Squid](http://www.squid-cache.org/) is the most popular software HTTP proxy. It generates a log file where all HTTP transactions are recorded. It is typically stored in `/var/log/squid/access.log`; it can assume various formats, but NetLytics assumes the default one is used (called `squid format` in Squid documentation).
+
+Squid does not handle log file rotation and storage, but users typically employ the [logrotate](https://linux.die.net/man/8/logrotate) utility to handle this.
+`logrotate` periodically rotates log files and stores old ones with the name `access.log-YYYYMMDD` where `YYYY`, `MM` and `DD` are the current year, month and day respectively.
+NetLytics assumes this name format is used to store log files on HDFS.
 
 ## 2.1 Data storage
 NetLytics assumes that network log files are stored on HDFS and accessible by the current Spark user.
