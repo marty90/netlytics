@@ -38,6 +38,11 @@ Done with https://github.com/ekalinin/github-markdown-toc )
    * [4. Use NetLytics as a library](#4-use-netlytics-as-a-library)
       * [4.1 Get Data Table from raw logs](#41-get-data-table-from-raw-logs)
       * [4.2 Process a Data Table to extract features](#42-process-a-data-table-to-extract-features)
+      * [4.3 Use algorithms to process Data Tables](#43-use-algorithms-to-process-data-tables)
+         * [4.3.1 Clustering](#431-clustering)
+         * [4.3.2 Anomaly Detection](#432-anomaly-detection)
+         * [4.3.3 Advanced Analytics](#433-advanced-analytics)
+
 
 # 1. Prerequisites
 Netlytics is designed to work in the Hadoop ecosystem. As such, it needs HDFS and Apache Spark (>= 2.0.0) to respectively store and process log files. It uses python 2.7 and few python packages: you can install them with pip
@@ -461,8 +466,60 @@ manipulated_dataset = core.utils.transform(dataframe,spark,\
 
 ```
 
+## 4.3 Use algorithms to process Data Tables
+You can use available algorithms in your own code.
+
+### 4.3.1 Clustering
+Each class implementing a clustering algorithm extends the class `core.clustering_algo.ClusteringAlgo`.
+It provides a constructor with a single argument being a dictionary of parameters, a single method called `run()` that takes as input a DataFrame and provides as output another DataFrame with an extra column specifying the cluster ID.
+The input DataFrame must have a column named `features` containing a list of floats to be used as features.
+
+Example:
+```
+from algos.clustering.KMeans import KMeans
+
+# You must craft a dataframe with the 'features' column
+dataframe = ...
+
+kmeans = KMeans ({"K":10, "seed":1234})
+prediction = kmeans.run(dataframe)
+
+```
+
+### 4.3.2 Anomaly Detection
+TBD
+
+### 4.3.3 Advanced Analytics
+Each class implementing an Advanced Analytics extends the class `core.algo.Algo`.
+It takes as input a DataFrame of one of the aforementioned types (DNS, HTTP and NamedFlows).
+
+It provides a constructor with a several arguments:
+* **input_DF**: the input data table to manipulate
+* **output_dir**: the input directory (local) where results are stored
+* **temp_dir_local**: a temporary local directory where the algorithm may save temporary files.
+* **temp_dir_HDFS**: a temporary HDFS directory where the algorithm may save temporary files.
+* **persistent_dir_local**: a local directory where the algorithm may save data for further runs.
+* **persistent_dir_HDFS**: a HDFS directory where the algorithm may save data for further runs.
+
+Each algorithm has one method called `run()` which executes the algorithm and saves resulting output.
 
 
+Example:
+```
+from algos.WHAT import WHAT
 
+# You must craft a NamedFlows dataframe
+dataframe = ...
 
+# Get an instance of the algorithm
+what = WHAT (dataframe,\
+            "/output_WHAT",
+            "/tmp",
+            "/data/user/foo/tmp",\
+            "~/what_data",\
+            "/data/user/foo/what_data")
+
+# Run it
+what.run()
+```
 
