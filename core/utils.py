@@ -1,10 +1,76 @@
 from pyspark.ml.feature import OneHotEncoder, StringIndexer
 from pyspark.sql.functions import col, when
-import numpy as np
-from pyspark.ml.feature import Normalizer
-import operator
 from pyspark.sql import Row
+from pyspark.sql.types import StructType
 from pyspark.ml.linalg import DenseVector
+from pyspark.ml.feature import Normalizer
+from datetime import timedelta, date
+import numpy as np
+import operator
+import json
+import importlib
+import os
+import zipfile
+import operator
+
+
+# Create a data table, given connector and path
+def get_dataset(sc,spark,base_path,connector,input_path,start_day, end_day ):
+    # Ship code to executors
+    ship_dir (base_path + "/algos",sc, base_path)
+    ship_dir (base_path + "/core",sc, base_path)
+    ship_dir (base_path + "/connectors",sc, base_path)
+
+
+    # Find connector
+    connector_module = my_import(connector,sc)
+
+    # Parse dates
+    y1,m1,d1 = start_day.split("_")
+    date1 = date (int(y1),int(m1),int(d1))
+    y2,m2,d2 = end_day.split("_")
+    date2 = date (int(y2),int(m2),int(d2))
+
+    # Instantiate connector
+    connector_instance = connector_module(input_path,date1,date2 )
+
+    # Get and enforce Schema
+    output_type = connector_instance.output_type
+    schema_file = base_path + "/schema/" + output_type + ".json"
+    schema_json = json.load(open(schema_file,"r"))
+    schema = StructType.fromJson(schema_json)
+    connector_instance.set_schema (schema)
+
+    # Get Dataset
+    dataset = connector_instance.get_DF(sc,spark)
+
+    # Return
+    return dataset
+
+
+def my_import(name,sc):
+    labels = name.split(".")
+    base_name = ".".join(labels[:-1])
+    module = importlib.import_module(base_name)
+    my_class = getattr(module, labels[-1])
+    return my_class
+
+n=0
+def ship_dir(path,sc, base_path):
+    global n
+    n+=1
+    zipf = zipfile.ZipFile('/tmp/' + str(n)+ '.zip', 'w', zipfile.ZIP_DEFLATED)
+    zipdir(path + '/', zipf, base_path)
+    zipf.close()
+    sc.addPyFile('/tmp/' + str(n)+ '.zip')
+
+def zipdir(path, ziph, base_path):
+    # ziph is zipfile handle
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            ziph.write(os.path.join(root, file),  os.path.relpath(os.path.join(root, file),base_path )  )
+
+
 
 def transform(df, spark, sql_query = None, numerical_features = [], categorical_features = [],\
               normalize = True, normalize_p=2):
