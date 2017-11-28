@@ -80,8 +80,6 @@ def main():
 
 
 
-
-
 def my_import(name,sc):
     labels = name.split(".")
     base_name = ".".join(labels[:-1])

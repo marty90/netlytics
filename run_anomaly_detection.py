@@ -13,7 +13,8 @@ import zipfile
 import core.manipulate_dataframe
 from pyspark.ml.linalg import DenseVector
 import operator
-import core.S_H_ESD
+import core.utils
+
 
 def main():
 
@@ -80,66 +81,26 @@ def main():
     sc = SparkContext(conf = conf)
     spark = SparkSession(sc)
 
-    # Ship code to executors
-    ship_dir (base_path + "/algos",sc, base_path)
-    ship_dir (base_path + "/core",sc, base_path)
-    ship_dir (base_path + "/connectors",sc, base_path)
-
-
-    # Find connector
-    connector_module = my_import(connector,sc)
-
-    # Parse dates
-    y1,m1,d1 = start_day.split("_")
-    date1 = date (int(y1),int(m1),int(d1))
-    y2,m2,d2 = end_day.split("_")
-    date2 = date (int(y2),int(m2),int(d2))
-
-    # Instantiate connector
-    connector_instance = connector_module(input_path,date1,date2 )
-
-    # Get and enforce Schema
-    output_type = connector_instance.output_type
-    schema_file = base_path + "/schema/" + output_type + ".json"
-    schema_json = json.load(open(schema_file,"r"))
-    schema = StructType.fromJson(schema_json)
-    connector_instance.set_schema (schema)
-
-    # Get Dataset
-    dataset = connector_instance.get_DF(sc,spark)
-
-    manipulated_dataset = core.manipulate_dataframe.transform(dataset,spark,\
+    # Create the dataframe
+    dataset = core.utils.get_dataset(sc,spark,base_path,connector,input_path,start_day, end_day )
+    
+    # Pre process the dataframe
+    manipulated_dataset = core.utils.transform(dataset,spark,\
                                                 sql_query = query,\
                                                 numerical_features = numerical_features,
                                                 categorical_features = categorical_features,
                                                 normalize=normalize)
+    # Run Anomaly Detection
+    AD_algo_module = my_import(algo,sc)
+    AD_algo_instance = AD_algo_module( json.loads(params) )
+    pandas_df = AD_algo_instance.run(manipulated_dataset)
 
-    #manipulated_dataset.show(n=200)
+    # Save Output in CSV
+    # Create output_path if not existing
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+    pandas_df.to_csv(output_path + "/results.csv")
 
-    if algo == "S_H_ESD":
-        df_pandas= manipulated_dataset.toPandas()
-        print ("FD")
-        print (df_pandas)
-
-    # Save Output
-    def RowToStr(row):
-        out_dict={}
-        in_dict =row.asDict()
-        for f in in_dict:
-            if isinstance(in_dict[f], DenseVector):
-                j = '"' + json.dumps(list(in_dict[f])) + '"'
-                out_dict[f]=j
-            else:
-                j = json.dumps(in_dict[f])
-                out_dict[f]=j
-
-        fields = [v for k,v in sorted (out_dict.items(), key=operator.itemgetter(0) )]
-
-        string = ",".join(fields)
-        return string
-
-    rdd = prediction.rdd.map(RowToStr)
-    rdd.saveAsTextFile(output_path)
 
 def my_import(name,sc):
     labels = name.split(".")
@@ -147,21 +108,6 @@ def my_import(name,sc):
     module = importlib.import_module(base_name)
     my_class = getattr(module, labels[-1])
     return my_class
-
-n=0
-def ship_dir(path,sc, base_path):
-    global n
-    n+=1
-    zipf = zipfile.ZipFile('/tmp/' + str(n)+ '.zip', 'w', zipfile.ZIP_DEFLATED)
-    zipdir(path + '/', zipf, base_path)
-    zipf.close()
-    sc.addPyFile('/tmp/' + str(n)+ '.zip')
-
-def zipdir(path, ziph, base_path):
-    # ziph is zipfile handle
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            ziph.write(os.path.join(root, file),  os.path.relpath(os.path.join(root, file),base_path )  )
 
 main()
 
