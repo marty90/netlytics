@@ -204,7 +204,7 @@ You can specify an SQL query used to preprocess the Data Table used by the algor
 You must specify which features to use, separately for numerical and categorical. Categorical features are encoded in a one-hot vector, so do not provide features with high cardinality.
 You can normalize the data before running the algorithm.
 
-The output of clustering is a Data Table, with an additional column indicating the cluster ID.
+The output of clustering is the input Data Table, with two additional columns: one reporting the employed features, and the other specifying the cluster ID.
 
 To run clustering, you must use the `run_clustering.py` script, with the following syntax:
 ```
