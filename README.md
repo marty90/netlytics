@@ -35,7 +35,9 @@ Done with https://github.com/ekalinin/github-markdown-toc )
       * [3.2 Anomaly Detection](#32-anomaly-detection)
       * [3.3 Advanced Analytics](#33-advanced-analytics)
       * [3.4 Running SQL queries](#34-running-sql-queries)
-
+   * [4. Use NetLytics as a library](#4-use-netlytics-as-a-library)
+      * [4.1 Get Data Table from raw logs](#41-get-data-table-from-raw-logs)
+      * [4.2 Process a Data Table to extract features](#42-process-a-data-table-to-extract-features)
 
 # 1. Prerequisites
 Netlytics is designed to work in the Hadoop ecosystem. As such, it needs HDFS and Apache Spark (>= 2.0.0) to respectively store and process log files. It uses python 2.7 and few python packages: you can install them with pip
@@ -407,5 +409,59 @@ spark-submit run_query.py \
       --output_file_local "traffic_name.csv"
 
 ```
+
+# 4. Use NetLytics as a library
+Many parts of NetLytics can be used as a library, and be included in you spark application.
+All you need is to include the needed modules and use them.
+
+## 4.1 Get Data Table from raw logs
+You can create a Data Table (a Spark Dataframe) using NetLytics APIs.
+You must use the function: `core.utils.get_dataset()`.
+
+For example, you may run:
+```
+import core.utils
+
+# Create Spark Context
+sc = SparkContext(conf = conf)
+spark = SparkSession(sc)
+
+# Get path of NetLytics
+base_path = os.path.dirname(os.path.realpath(__file__))
+    
+# Retrieve a Data Frame from raw log files in HDFS
+dataframe = core.utils.get_dataset(sc,\
+                                   spark,\
+                                   base_path,\
+                                   "connectors.squid_to_named_flows.Squid_To_Named_Flows",\
+                                   "logs/squid",\
+                                   start_day, end_day )
+```
+
+## 4.2 Process a Data Table to extract features
+You can do some operation to a Data Table using the `core.utils.transform()`.
+You can specify: (i) a SQL query to execute on the Data Frame, (ii) which categorical and numerical features to extract, and (iii) whether to normalize the feature.
+Note that categorical features are encoded in a one-hot vector, so do not provide features with high cardinality.
+
+The output DataFrame has an extra column called `features`, containing a list of floating numbers to be used as features to be used for machine learning algorithms.
+
+For example, you may run:
+```
+# Create a Data Table
+dataframe=...
+
+# Manipulate it
+manipulated_dataset = core.utils.transform(dataframe,spark,\
+                                           sql_query = "SELECT * from netlytics",\
+                                           numerical_features = ["response_body_len"],
+                                           categorical_features = ["method","status_code"],
+                                           normalize=True,
+                                           normalize_p=2)
+
+```
+
+
+
+
 
 
