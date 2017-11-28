@@ -252,7 +252,7 @@ optional arguments:
 
 For example, to run a simple clustering on **Squid** logs, you may run:
 ```
-spark-submit run_job.py \
+spark-submit run_clustering.py \
       \
       --connector "connectors.squid_to_HTTP.Squid_To_HTTP" \
       --input_path "logs/squid" \
@@ -281,7 +281,65 @@ Available algorithms are:
 Other algorithms will be added in the future.
 
 ## 3.2 Anomaly Detection
-TBD
+Anomaly Detection Algorithms discover unusual/uncommon/infrequent instances in the data.
+You can run Anomaly Detection Algorithms over a Data Table, using the `run_anomaly_detection.py` script.
+Its syntax is:
+```
+spark-submit run_anomaly_detection.py [-h] [--connector connector]
+                                [--input_path input_path]
+                                [--start_day start_day] [--end_day end_day]
+                                [--output_path output_path] [--algo algo]
+                                [--params params] [--query query]
+                                [--numerical_features numerical_features]
+                                [--categorical_features categorical_features]
+                                [--normalize]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --connector connector
+                        Connector class name
+  --input_path input_path
+                        Base Log Files Input Path
+  --start_day start_day
+                        Start day for analysis, format YYYY_MM_DD
+  --end_day end_day     End day for analysis, format YYYY_MM_DD
+  --output_path output_path
+                        Path where to store resulting labeled Data Table
+  --algo algo           Clustering Algorithm to run
+  --params params       Parameters to be given to the Clustering Algorithm, in
+                        Json
+  --query query         Eventual SQL query to execute to preprocess the
+                        dataset
+  --numerical_features numerical_features
+                        Columns to use as numerical features, separated by
+                        comma
+  --categorical_features categorical_features
+                        Columns to use as categorical features, separated by
+                        comma
+```
+For example, to find anomalous spikes in data, you can run the following command:
+```
+spark-submit run_anomaly_detection.py \
+      \
+      --connector "connectors.squid_to_HTTP.Squid_To_HTTP" \
+      --input_path "logs/squid" \
+      --start_day "2017_03_01" \
+      --end_day "2017_03_31" \
+      \
+      --algo algos.anomaly_detection.S_H_ESD.S_H_ESD \
+      --query 'select FLOOR(time_start/60)*60 as time, sum(s_bytes) as value from netlytics group by FLOOR(time_start/60) * 60 order by time'
+      --numerical_features "value" \
+      --output_path "S_H_ESD_output" \
+```
+
+Available algorithms are:
+* **Seasonal Hybrid ESD (S-H-ESD)**: is an angorithm for detecting anomalies on time series proposed by Twitter (info [here](https://github.com/twitter/AnomalyDetection) and [here](https://arxiv.org/pdf/1704.07706.pdf)). You must provide a data table with a column named `time` and a single feature representing the value of the series.
+    * Parameters:
+        * `period`: periodicity of the data, If not specified, it is autcomputed.
+        * `alpha`: confidence interval for generalized-ESD. Default is 0.025
+        * `hybrid`: if True, median and MAD replace mean and std. Default is True.
+    * Class Name: `algos.anomaly_detection.S_H_ESD.S_H_ESD`
+    
 
 ## 3.3 Advanced Analytics
 
@@ -489,7 +547,24 @@ prediction = kmeans.run(dataframe)
 ```
 
 ### 4.3.2 Anomaly Detection
-TBD
+Each class implementing an anomaly detection algorithm extends the class `core.anomaly_detection_algo.AnomalyDetectionAlgo`.
+It provides a constructor with a single argument being a dictionary of parameters, a single method called `run()` that takes as input a DataFrame and provides as output another a **pandas** dataframe with the results of the run.
+Output format may variate according to the algorithm.
+
+Example:
+```
+from algos.anomaly_detection.S_H_ESD import S_H_ESD
+
+# You must craft a dataframe with the 'time' and 'features' columns
+dataframe = ...
+
+# Run the S_H_ESD
+s_h_esd = S_H_ESD ()
+anomalies = s_h_esd.run(dataframe)
+
+# Save the output pandas dataframe
+anomalies.to_csv("anomalies.csv")
+```
 
 ### 4.3.3 Advanced Analytics
 Each class implementing an Advanced Analytics extends the class `core.algo.Algo`.
