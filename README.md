@@ -204,7 +204,7 @@ In the follwing, for exemplification, we suppose to have **Squid** log files ava
 Clustering algorithms group data toghether.
 
 You must provide the algorithm, an input Data Table, and its parameters.
-You can specify an SQL query used to preprocess the Data Table used by the algorithm.
+You can specify an SQL query used to preprocess the Data Table used by the algorithm. The name of the table to be used in the query is `netlytics`.
 You must specify which features to use, separately for numerical and categorical. Categorical features are encoded in a one-hot vector, so do not provide features with high cardinality.
 You can normalize the data before running the algorithm.
 
@@ -442,7 +442,8 @@ dataframe = core.utils.get_dataset(sc,\
 You can do some operation to a Data Table using the `core.utils.transform()`.
 You can specify: (i) a SQL query to execute on the Data Frame, (ii) which categorical and numerical features to extract, and (iii) whether to normalize the feature.
 Note that categorical features are encoded in a one-hot vector, so do not provide features with high cardinality.
-
+The name of the table to be used in the SQL query is `netlytics`.
+ 
 The output DataFrame has an extra column called `features`, containing a list of floating numbers to be used as features to be used for machine learning algorithms.
 
 For example, you may run:
