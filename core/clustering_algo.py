@@ -8,7 +8,7 @@ class ClusteringAlgo:
     parameters = {}
 
     def __init__(self, parameters={} ):
-        for p in parameters
+        for p in parameters:
             self.parameters[p] = parameters[p]
         
 

@@ -24,7 +24,7 @@ class Tstat_To_HTTP(Connector):
 
         log=spark_context.textFile(paths_str)
 
-        log_mapped = log.filter(filterLine).map(mapLine)
+        log_mapped = log.filter(filterLine).map(mapLine).repartition(days*24)
 
         schema = self.schema
         df = sql_context.createDataFrame(log_mapped, schema=schema)     

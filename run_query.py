@@ -2,6 +2,7 @@
 
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
+from pyspark.sql.types import StructType
 from datetime import timedelta, date
 import argparse
 import importlib
@@ -88,7 +89,7 @@ def main():
     
     # Get and enforce Schema
     output_type = connector_instance.output_type
-    schema_file = "schema/" + output_type + ".json"
+    schema_file = base_path + "/schema/" + output_type + ".json"
     schema_json = json.load(open(schema_file,"r"))
     schema = StructType.fromJson(schema_json)
     connector_instance.set_schema (schema)
@@ -105,7 +106,8 @@ def main():
         result_df.write.save(output_file_HDFS,"csv")
     elif output_file_local != "":
         df_pandas = result_df.toPandas()
-        df_pandas.to_csv(output_file_local, encoding="unicode")
+        df_pandas.to_csv(output_file_local, encoding="raw_unicode_escape")
+
 
 
 
@@ -118,19 +120,19 @@ def my_import(name,sc):
     return my_class
 
 n=0
-def ship_dir(path,sc):
+def ship_dir(path,sc, base_path):
     global n
     n+=1
     zipf = zipfile.ZipFile('/tmp/' + str(n)+ '.zip', 'w', zipfile.ZIP_DEFLATED)
-    zipdir(path + '/', zipf)
+    zipdir(path + '/', zipf, base_path)
     zipf.close()
     sc.addPyFile('/tmp/' + str(n)+ '.zip')
 
-def zipdir(path, ziph):
+def zipdir(path, ziph, base_path):
     # ziph is zipfile handle
     for root, dirs, files in os.walk(path):
         for file in files:
-            ziph.write(os.path.join(root, file))
+            ziph.write(os.path.join(root, file),  os.path.relpath(os.path.join(root, file),base_path )  )
 
 main()
 

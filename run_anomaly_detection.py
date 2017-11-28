@@ -11,11 +11,9 @@ import json
 import os
 import zipfile
 import core.manipulate_dataframe
-from pyspark.ml.clustering import KMeans
-from pyspark.ml.clustering import GaussianMixture
-from pyspark.ml.clustering import BisectingKMeans
 from pyspark.ml.linalg import DenseVector
 import operator
+import core.S_H_ESD
 
 def main():
 
@@ -48,10 +46,10 @@ def main():
     parser.add_argument('--query', metavar='query', type=str, default = None,
                         help='Eventual SQL query to execute to preprocess the dataset')
 
-    parser.add_argument('--numerical_features', metavar='numerical_features', type=str,
+    parser.add_argument('--numerical_features', metavar='numerical_features', type=str, default="",
                         help='Columns to use as numerical features, separated by comma')   
 
-    parser.add_argument('--categorical_features', metavar='categorical_features', type=str,
+    parser.add_argument('--categorical_features', metavar='categorical_features', type=str, default="",
                         help='Columns to use as categorical features, separated by comma') 
 
 
@@ -68,8 +66,8 @@ def main():
     start_day=args["start_day"]
     end_day=args["end_day"]
     query=args["query"]
-    numerical_features=args["numerical_features"].split(",")
-    categorical_features=args["categorical_features"].split(",")
+    numerical_features=args["numerical_features"].split(",") if args["numerical_features"] != "" else []
+    categorical_features=args["categorical_features"].split(",") if args["categorical_features"] != "" else []
     normalize=args["normalize"]
 
     # Get path of NetLytics
@@ -118,21 +116,10 @@ def main():
 
     #manipulated_dataset.show(n=200)
 
-    if algo == "KMeans":
-        K = json.loads(params)["K"]
-        kmeans = KMeans().setK(K).setSeed(1)
-        model = kmeans.fit(manipulated_dataset)        
-        prediction = model.transform(manipulated_dataset)
-    elif algo == "BisectingKMeans":
-        K = json.loads(params)["K"]
-        kmeans = BisectingKMeans().setK(K).setSeed(1)
-        model = kmeans.fit(manipulated_dataset)        
-        prediction = model.transform(manipulated_dataset)
-    elif algo == "GaussianMixture":
-        K = json.loads(params)["K"]
-        gmm = GaussianMixture().setK(K).setSeed(1)
-        model = gmm.fit(manipulated_dataset)        
-        prediction = model.transform(manipulated_dataset)
+    if algo == "S_H_ESD":
+        df_pandas= manipulated_dataset.toPandas()
+        print ("FD")
+        print (df_pandas)
 
     # Save Output
     def RowToStr(row):

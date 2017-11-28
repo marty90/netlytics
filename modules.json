@@ -131,6 +131,21 @@
                 "N":"Truncate output after N entries. Default: No limit."
             }
         }
+    },
+    "clustering":
+    {
+        "KMeans":
+        {
+            "class": "algos.clustering.KMeans.KMeans"
+        },
+        "BisectingKMeans":
+        {
+            "class": "algos.clustering.BisectingKMeans.BisectingKMeans"
+        },
+        "GaussianMixture":
+        {
+            "class": "algos.clustering.GaussianMixture.GaussianMixture"
+        },
     }
 
 }

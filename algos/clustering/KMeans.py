@@ -1,6 +1,6 @@
 from __future__ import print_function
 from core.clustering_algo import ClusteringAlgo
-from pyspark.ml.clustering import KMeans
+import pyspark.ml.clustering
 import operator
 import os
 
@@ -16,7 +16,7 @@ class KMeans(ClusteringAlgo):
 
         K = self.parameters["K"]
         seed = self.parameters["seed"]
-        kmeans = KMeans().setK(K).setSeed(seed)
+        kmeans = pyspark.ml.clustering.KMeans().setK(K).setSeed(seed)
 
         model = kmeans.fit(input_dataframe)        
         prediction = model.transform(input_dataframe)

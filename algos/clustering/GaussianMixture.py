@@ -5,10 +5,10 @@ import operator
 import os
 
 # DNS Manipulations
-class BisectingKMeans(ClusteringAlgo):
+class GaussianMixture(ClusteringAlgo):
 
     # Class Information
-    _name = "BisectingKMeans"
+    _name = "GaussianMixture"
     parameters={"K":5,"seed":1}
 
     # Run the algorithm
@@ -16,7 +16,7 @@ class BisectingKMeans(ClusteringAlgo):
 
         K = self.parameters["K"]
         seed = self.parameters["seed"]
-        kmeans = pyspark.ml.clustering.BisectingKMeans().setK(K).setSeed(seed)
+        kmeans = pyspark.ml.clustering.GaussianMixture().setK(K).setSeed(seed)
 
         model = kmeans.fit(input_dataframe)        
         prediction = model.transform(input_dataframe)
