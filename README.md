@@ -453,6 +453,8 @@ The output DataFrame has an extra column called `features`, containing a list of
 
 For example, you may run:
 ```
+import core.utils
+
 # Create a Data Table
 dataframe=...
 
