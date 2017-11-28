@@ -336,7 +336,7 @@ Available algorithms are:
 * **Seasonal Hybrid ESD (S-H-ESD)**: is an angorithm for detecting anomalies on time series proposed by Twitter (info [here](https://github.com/twitter/AnomalyDetection) and [here](https://arxiv.org/pdf/1704.07706.pdf)). You must provide a data table with a column named `time` and a single feature representing the value of the series.
 S-H-ESD is able to find both *local* and *global* anomalies, as exemplified by the next figure, where we used 1 month data coming from operational passive probes.
 
-![alt text](https://github.com/marty90/netlytics/raw/master/images/time_series.png)
+![alt text](https://github.com/marty90/netlytics/raw/master/images/timeseries.png)
 
     * Parameters:
         * `period`: periodicity of the data, If not specified, it is autcomputed.
