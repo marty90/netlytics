@@ -440,7 +440,7 @@ dataframe = core.utils.get_dataset(sc,\
                                    base_path,\
                                    "connectors.squid_to_named_flows.Squid_To_Named_Flows",\
                                    "logs/squid",\
-                                   start_day, end_day )
+                                   "2017_03_01", "2017_03_31 )
 ```
 
 ## 4.2 Process a Data Table to extract features
