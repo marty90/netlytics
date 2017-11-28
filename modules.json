@@ -146,6 +146,12 @@
         {
             "class": "algos.clustering.GaussianMixture.GaussianMixture"
         },
+    },
+    "anomaly_detection":
+    {
+        "Seasonal Hybrid ESD":
+        {
+            "class": "algos.anomaly_detection.S_H_ESD.S_H_ESD"
+        }
     }
-
 }

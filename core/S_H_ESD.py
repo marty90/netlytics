@@ -9,7 +9,10 @@ def S_H_ESD (s, period=None, alpha=0.025, hybrid=True ):
 
     seasons, trend = fit_seasons(s, period = period)
     adjusted = adjust_seasons(s, seasons=seasons)
-    residual = adjusted - trend
+    if adjusted is not None:
+        residual = adjusted - trend
+    else:
+        residual = s - trend
 
     max_out = int(len(residual)/2-1)
 
