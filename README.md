@@ -343,7 +343,11 @@ S-H-ESD is able to find both *local* and *global* anomalies, as exemplified by t
         * `alpha`: confidence interval for generalized-ESD. Default is 0.025
         * `hybrid`: if True, median and MAD replace mean and std. Default is True.
     * Class Name: `algos.anomaly_detection.S_H_ESD.S_H_ESD`
-    
+
+* **Univariate Anomaly Detection**: detect anomalies on a single numerical feature. It provides two possibilities to detect outliers: (i) outliers are instances lying outside mean +- 3 * stdev, or (ii) instances lying outside [Quartile1 - 1.5 * IQR, Quartile3 + 1.5 * IQR], also known as *boxplot rule*. You must provide a single numerical feature to this algorothm.
+    * Parameters:
+        * `method`: can be gaussian or boxplot, to select algorithm to use.
+    * Class Name: `algos.anomaly_detection.univariate_anomalies.UnivariateAnomalies`
 
 ## 3.3 Advanced Analytics
 
