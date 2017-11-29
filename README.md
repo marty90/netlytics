@@ -363,7 +363,7 @@ Advanced analytics solve particular problems in networking. Available algorithms
     * Input Data Table: Named Flows
     * Class Name: `algos.WHAT.WHAT`
     * Parameters: 
-        * CORES : Core Domains to measure.",
+        * CORES : Core Domains to measure.
         * OW : Observation Windows for training, in milliseconds. Default 10000.
         * GAP : Silent time for considering OW, in milliseconds. Default 10000.
         * EW : Evaluation Window for classification, in milliseconds. Default 5000.
