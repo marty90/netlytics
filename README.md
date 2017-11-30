@@ -277,6 +277,11 @@ Available algorithms are:
 * **GaussianMixture**
     * Parameters: `K` and `seed`
     * Class Name: `algos.clustering.GaussianMixture.GaussianMixture`
+* **DBScan**
+    * Parameters: `eps` and `min_points`
+    * Class Name: `algos.clustering.DBScan.DBScan`
+    * **Warning**: the provided implementation is parallel, but DBScan is an O(n<sup>2</sup>) algorthm, and, thus, the required computational power (and memory) is still polynomial with respect to the input dataset size.
+
 
 Other algorithms will be added in the future.
 
