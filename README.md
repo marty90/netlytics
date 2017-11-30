@@ -47,7 +47,7 @@ Done with https://github.com/ekalinin/github-markdown-toc )
 # 1. Prerequisites
 Netlytics is designed to work in the Hadoop ecosystem. As such, it needs HDFS and Apache Spark (>= 2.0.0) to respectively store and process log files. It uses python 2.7 and few python packages: you can install them with pip
 ```
-sudo pip install zipfile scapy numpy pandas pyasn
+sudo pip install zipfile scapy numpy pandas pyasn networkx seasonal requests six
 ```
 If you are using a cluster, these packages must be installed on each worker node.
 
