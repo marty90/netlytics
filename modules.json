@@ -87,13 +87,28 @@
             "parameters":
             {
                 "CORES":"Core Domains to measure.",
-                "OW":"Observation Windows for training, in milliseconds. Default 10000.",
-                "GAP":"Silent time for considering OW, in milliseconds. Default 10000.",
-                "EW":"Evaluation Window for classification, in milliseconds. Default 5000.",
+                "OW":"Observation Windows for training, in seconds. Default 10.",
+                "GAP":"Silent time for considering OW, in seconds. Default 10.",
+                "EW":"Evaluation Window for classification, in milliseconds. Default 50.",
+                "MINFREQ":"Minimum Frequency for a domain to remain in tha BoD. Default 0.05.",
                 "N_TOP":"Truncate output list after N_TOP entries. Default 50."
             },
             "output_format":"A single CSV file reporting the amount of traffic due to each core domain.",
             "description": "WHAT is a system to uncover the overall traffic produced by specific web services. WHAT combines big data and machine learning approaches to process large volumes of network flow measurements and learn how to group traffic due to pre-defined services of interest."
+        },
+        "PAIN":
+        {
+            "class": "algos.pain.pain.Pain",
+            "input_type": "NamedFlows",
+            "preferred_batch": "5d",
+            "parameters":
+            {
+                "CORES":"Core Domains to measure.",
+                "GAP":"Silent time for considering EW in training, in seconds. Default 5.",
+                "EW":"Evaluation Window for classification, in milliseconds. Default 30.",
+            },
+            "output_format":"A single CSV file reporting the an entry for each visit to a core domain, along with performance metrics.",
+            "description": "PAIN (PAssive INdicator) is an automatic system to observe the performance of web pages at ISPs. It leverages passive flow-level and DNS measurements which are still available in the network despite the deployment of HTTPS. With unsupervised learning, PAIN automatically creates a model from the timeline of requests issued by browsers to render web pages, and uses it to analyze the web performance in real-time."
         },
         "TrafficPerDomain":
         {
@@ -146,12 +161,20 @@
         {
             "class": "algos.clustering.GaussianMixture.GaussianMixture"
         },
+        "DBScan":
+        {
+            "class": "algos.clustering.DBScan.DBScan"
+        }
     },
     "anomaly_detection":
     {
         "Seasonal Hybrid ESD":
         {
             "class": "algos.anomaly_detection.S_H_ESD.S_H_ESD"
+        },
+        "Univiariate Anomaly Detection":
+        {
+            "class": "algos.anomaly_detection.univariate_anomalies.UnivariateAnomalies"
         }
     }
 }
