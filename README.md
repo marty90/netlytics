@@ -367,11 +367,22 @@ Advanced analytics solve particular problems in networking. Available algorithms
     * Class Name: `algos.WHAT.WHAT`
     * Parameters: 
         * CORES : Core Domains to measure.
-        * OW : Observation Windows for training, in milliseconds. Default 10000.
-        * GAP : Silent time for considering OW, in milliseconds. Default 10000.
-        * EW : Evaluation Window for classification, in milliseconds. Default 5000.
+        * OW : Observation Windows for training, in seconds. Default 10.
+        * GAP : Silent time for considering OW, in seconds. Default 10.
+        * EW : Evaluation Window for classification, in seconds. Default 5.
+        * MINFREQ : Minimum Frequency for a domain to remain in tha BoD. Default 0.05.
         * N_TOP : Truncate output list after N_TOP entries. Default 50.
      * Output: A single CSV file reporting the amount of traffic due to each core domain.
+* **PAIN: Passive Indicator**: PAIN (PAssive INdicator) is an automatic system to observe the performance of web pages at ISPs. It leverages passive flow-level and DNS measurements which are still available in the network despite the deployment of HTTPS. With unsupervised learning, PAIN automatically creates a model from the timeline of requests issued by browsers to render web pages, and uses it to analyze the web performance in real-time.. The paper is available [here](http://porto.polito.it/2675141/2/ssl_qoe_tma_open.pdf).
+    * Input Data Table: Named Flows
+    * Class Name: `algos.pain.pain.Pain`
+    * Parameters: 
+        * CORES : Core Domains to measure.        
+        * GAP : Silent time for considering OW, in seconds. Default 10.
+        * EW : Evaluation Window for classification, in seconds. Default 30.
+        * MINFREQ : Minimum Frequency for a domain to remain in tha BoD. Default 0.25.
+        * N_CP : Number of CheckPoints for the model, default is 4.
+     * Output: A single CSV file reporting the an entry for each visit to a core domain, along with performance metrics.
 * **Contacted domains**: account the traffic generated on the network on a per domain fashion.
     * Input Data Table: Named Flows
     * Class Name: `algos.domain_traffic.DomainTraffic`
