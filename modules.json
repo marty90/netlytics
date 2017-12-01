@@ -105,7 +105,9 @@
             {
                 "CORES":"Core Domains to measure.",
                 "GAP":"Silent time for considering EW in training, in seconds. Default 5.",
+                "MINFREQ":"Minimum Frequency for a domain to remain in tha BoD. Default 0.25.",
                 "EW":"Evaluation Window for classification, in milliseconds. Default 30.",
+                "N_CP":"Evaluation Window for classification, in milliseconds. Default 30."
             },
             "output_format":"A single CSV file reporting the an entry for each visit to a core domain, along with performance metrics.",
             "description": "PAIN (PAssive INdicator) is an automatic system to observe the performance of web pages at ISPs. It leverages passive flow-level and DNS measurements which are still available in the network despite the deployment of HTTPS. With unsupervised learning, PAIN automatically creates a model from the timeline of requests issued by browsers to render web pages, and uses it to analyze the web performance in real-time."
