@@ -54,7 +54,7 @@ def getBags(iterator, rules, window_len):
                 bags.append(json.dumps(current_bag[client]))
                 
         # Open a new window
-        if name in rules:
+        if name in rules and not c_ip in windows:
             windows[c_ip]={"name":name,"time":time}      
             current_bag[c_ip] = {"__name__": name, "__c_ip__": c_ip, "__time__": time}
             for support in rules[name]:
